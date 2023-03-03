@@ -19,7 +19,7 @@ def missingOneValueTestData():
     p = "/missing-value-tests"
     testFile = "/missing1"
 
-    ms = np.random.choice(metals , ROWS , replace=True , p=[.5,.4,.1,0])
+    ms = np.random.choice(metals , ROWS , replace=True , p=[.4,.3,.3,0])
 
     file = open(file=f"{filePath}{p}{testFile}" , mode="wt")
 
