@@ -1,4 +1,4 @@
-import { Request ,  Response} from "express"
+import Express , { Request ,  Response, Router} from "express"
 
 
 
@@ -7,22 +7,32 @@ const data = {
     price : 1000
 }
 
-const path1Mock = async (req : Request , res : Response )  => {
-    res.setHeader("Content-Type" , "text/event-stream")
-
-    const timer = setInterval(() => {
-        res.write(`data:${JSON.stringify(data)}\n\n`)
-    } , 1000)
-
-    setTimeout( () => {
-        if(timer != null){
-            clearInterval(timer)
-        }
-        res.end()
-
-    } , 10000)
-
-  }
 
 
-  export { path1Mock }
+function mockRoute(router : Router) : Router{
+    const path2Mock = async (req : Request , res : Response )  => {
+        res.setHeader("Content-Type" , "text/event-stream")
+    
+        const timer = setInterval(() => {
+            res.write(`data:${JSON.stringify(data)}\n\n`)
+        } , 1000)
+    
+        setTimeout( () => {
+            if(timer != null){
+                clearInterval(timer)
+            }
+            res.end()
+    
+        } , 10000)
+    
+      }
+    
+      router.use("/coins" , path2Mock)
+
+      return router
+}
+
+
+
+
+  export { mockRoute as mockRoute1}
