@@ -1,100 +1,100 @@
 import os
 import json
-import numpy as np 
+import numpy as np
 import time
+from datetime import timedelta
+
+ROWS = 100
 
 
-ROWS = 50
-
-
-
-
-print("########## TEST CASES GENERATION ##########")
+print("########## TEST DATA GENERATION ##########")
 
 filePath = "./tests"
 
-metals = [ "XAU=", "XAG=", "XPT=", "XPD=" ]
-
-def missingOneValueTestData():
-    p = "/missing-value-tests"
-    testFile = "/missing1"
-
-    ms = np.random.choice(metals , ROWS , replace=True , p=[.4,.3,.3,0])
-
-    file = open(file=f"{filePath}{p}{testFile}" , mode="wt")
-
-    for m in ms:
-        d = {
-            "ric" : m,
-            "price" : np.random.rand() * 1000,
-            "updatedTime" : int(time.time()),
-            "errorCode" : None,
-            "signature" : "DEB1073E88492861F6B5B57DB6BB510E7E354B05433352C2C127356AD234E1CC"
-        }
-        file.write(json.dumps(d) + "\n")
+metals = ["XAU=", "XAG=", "XPT=", "XPD="]
 
 
-    file.close()
+def generateTest(
+    filepath: str,
+    dDelta: timedelta = timedelta(seconds=0),
+    p=[1, 1, 1, 1],
+    delay: timedelta = timedelta(seconds=10),
+):
+    arr = np.array(p)
+    prob = arr / arr.sum()
 
+    ms = np.random.choice(metals, ROWS, replace=True, p=prob)
 
-def missingTwoValuesTestData():
-    p = "/missing-value-tests"
-    testFile = "/missing2"
+    file = open(file=f"{filepath}", mode="wt")
 
-    ms = np.random.choice(metals , ROWS , replace=True , p=[.5,.5,0,0])
-
-    file = open(file=f"{filePath}{p}{testFile}" , mode="wt")
+    i = 0
 
     for m in ms:
         d = {
-            "ric" : m,
-            "price" : np.random.rand() * 1000,
-            "updatedTime" : int(time.time()),
-            "errorCode" : None,
-            "signature" : "DEB1073E88492861F6B5B57DB6BB510E7E354B05433352C2C127356AD234E1CC"
+            "ric": m,
+            "price": np.random.rand() * 1000,
+            "updatedTime": int(time.time() * 1000 - dDelta.total_seconds() * 1000),
+            "errorCode": None,
+            "signature": "DEB1073E88492861F6B5B57DB6BB510E7E354B05433352C2C127356AD234E1CC",
         }
-        file.write(json.dumps(d) + "\n")
+        file.write( str(int(i)) + "|" + json.dumps(d) + "\n")
 
+        i += delay.total_seconds() * 1000
 
     file.close()
 
 
 
-def missing3ValuesTestData():
-    p = "/missing-value-tests"
-    testFile = "/missing3"
+# metals = ["XAU=", "XAG=", "XPT=", "XPD="]
 
-    ms = np.random.choice(metals , ROWS , replace=True , p=[1,0,0,0])
+if __name__ == "__main__":
+    missing_values_tests = f"{filePath}/missing-value-tests"
+    updated_time_tests = f"{filePath}/updated-time-tests"
 
-    file = open(file=f"{filePath}{p}{testFile}" , mode="wt")
+    delay = 600
 
-    for m in ms:
-        d = {
-            "ric" : m,
-            "price" : np.random.rand() * 1000,
-            "updatedTime" : int(time.time()),
-            "errorCode" : None,
-            "signature" : "DEB1073E88492861F6B5B57DB6BB510E7E354B05433352C2C127356AD234E1CC"
-        }
-        file.write(json.dumps(d) + "\n")
+    generateTest(
+        f"{missing_values_tests}/missingAU",
+        p=[0,1,1,1],
+        delay=timedelta(milliseconds=delay),
+    )
+
+    generateTest(
+        f"{missing_values_tests}/missingAG",
+        p=[1,0,1,1],
+        delay=timedelta(milliseconds=delay),
+    )
+
+    generateTest(
+        f"{missing_values_tests}/missingPT",
+        p=[1,1,0,1],
+        delay=timedelta(milliseconds=delay),
+    )
+
+    generateTest(
+        f"{missing_values_tests}/missingPD",
+        p=[1,1,1,0],
+        delay=timedelta(milliseconds=delay),
+    )
+
+    generateTest(
+        f"{missing_values_tests}/allWithInTime",
+        p=[4,3,2,1],
+        delay=timedelta(milliseconds=delay),
+    )
+
+    generateTest(
+        f"{updated_time_tests}/withIn10minAgo",
+        p=[4,3,2,1],
+        dDelta=timedelta(minutes=5),
+        delay=timedelta(milliseconds=delay),
+    )
 
 
-    file.close()
-
-
-
-
-
-
-
-
-
-
-
-
-if(__name__ == "__main__"):
-    missingOneValueTestData()
-    missingTwoValuesTestData()
-    missing3ValuesTestData()
-
+    generateTest(
+        f"{updated_time_tests}/moreThan10minAgo",
+        p=[4,3,2,1],
+        dDelta=timedelta(days=1),
+        delay=timedelta(milliseconds=delay),
+    )
 
