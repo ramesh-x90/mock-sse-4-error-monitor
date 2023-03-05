@@ -3,28 +3,24 @@ import { readFile } from "fs/promises";
 import { stdin } from "process";
 import { PassThrough, Transform, TransformCallback } from "stream";
 
-
-
 class StdInterceptor extends PassThrough {
-    _write(
-      chunk: Buffer,
-      encoding: BufferEncoding,
-      callback: (error?: Error | null | undefined) => void
-    ): void {
-      let input: number = parseInt(chunk.toString()) - 1 ;
-  
-      if (input >= 0 && input <= testData.length - 1) {
-        streamData = testData[input];
-        console.log("New Test Data has been Loaded: " + filePaths[input])
-      } else {
-        console.log("invalid input");
-      }
-  
-      callback();
+  _write(
+    chunk: Buffer,
+    encoding: BufferEncoding,
+    callback: (error?: Error | null | undefined) => void
+  ): void {
+    let input: number = parseInt(chunk.toString()) - 1;
+
+    if (input >= 0 && input <= testData.length - 1) {
+      streamData = testData[input];
+      console.log("New Test Data has been Loaded: " + filePaths[input]);
+    } else {
+      console.log("invalid input");
     }
+
+    callback();
   }
-
-
+}
 
 const filePaths = [
   "./tests/missing-value-tests/allWithInTime",
@@ -56,7 +52,7 @@ let streamData: String[];
 
 Promise.all(promises).then((resutls) => {
   streamData = testData[0];
-  console.log("test_data_ready");
+  console.log("Test Data is Ready");
 });
 
 function mockRoute(router: Router): Router {
@@ -77,7 +73,6 @@ function mockRoute(router: Router): Router {
 
   return router;
 }
-
 
 stdin.pipe(new StdInterceptor());
 
