@@ -1,4 +1,5 @@
 import Express, { Request, Response, Router } from "express";
+import { readdirSync } from "fs";
 import { readFile } from "fs/promises";
 import { stdin } from "process";
 import { PassThrough, Transform, TransformCallback } from "stream";
@@ -9,35 +10,57 @@ class StdInterceptor extends PassThrough {
     encoding: BufferEncoding,
     callback: (error?: Error | null | undefined) => void
   ): void {
-    let input: number = parseInt(chunk.toString()) - 1;
+    let input = chunk.toString();
 
-    if (input >= 0 && input <= testData.length - 1) {
-      streamData = testData[input];
-      console.log("New Test Data has been Loaded: " + filePaths[input]);
-    } else {
-      console.log("invalid input");
+    // test=1
+    // delay=100
+
+    let [key, value] = input.split("=");
+
+    switch (key.trim()) {
+      case "test":
+        const val = parseInt(value) - 1;
+
+        if (val >= 0 && val <= testData.length - 1) {
+          streamData = testData[val];
+          console.log("New Test Data has been Loaded: " + filePaths[val]);
+        } else {
+          console.log("invalid input");
+        }
+        break;
+
+      case "delay":
+        delay = parseInt(value);
+        console.log(`Delay of 2 responses has been change to: ${delay}`);
+        break;
+      default:
+        break;
     }
 
     callback();
   }
 }
 
-const filePaths = [
-  "./tests/missing-value-tests/allWithInTime",
-  "./tests/missing-value-tests/missingAG",
-  "./tests/missing-value-tests/missingAU",
-  "./tests/missing-value-tests/missingPD",
-  "./tests/missing-value-tests/missingPT",
-  "./tests/updated-time-tests/moreThan10minAgo",
-  "./tests/updated-time-tests/withIn10minAgo",
-];
+let filePaths : string[] = [];
+
+const testCasePath1 ="./tests/missing-value-tests"
+readdirSync(testCasePath1).forEach( path => {
+  filePaths.push(`${testCasePath1}/${path}`)
+})
+
+
 
 let testData: String[][] = new Array(filePaths.length);
 const promises: any[] = [];
 
-filePaths.forEach((s, i) => {
+
+
+
+
+
+filePaths.forEach((path, i) => {
   promises.push(
-    readFile(s).then((data: Buffer) => {
+    readFile(path).then((data: Buffer) => {
       const arr = data
         .toString()
         .split("\n")
@@ -49,6 +72,7 @@ filePaths.forEach((s, i) => {
 });
 
 let streamData: String[];
+let delay = 100;
 
 Promise.all(promises).then((resutls) => {
   streamData = testData[0];
@@ -65,7 +89,7 @@ function mockRoute(router: Router): Router {
         if (i === streamData.length - 1) {
           res.end();
         }
-      }, i * 100);
+      }, i * delay);
     });
   };
 

@@ -47,31 +47,27 @@ def generateTest(
 if __name__ == "__main__":
     missing_values_tests = f"{filePath}/missing-value-tests"
     updated_time_tests = f"{filePath}/updated-time-tests"
+    happy_path = f"{filePath}/happy-path"
 
-    generateTest(
-        f"{missing_values_tests}/missingAU",
-        p=[0,1,1,1],
-    )
 
-    generateTest(
-        f"{missing_values_tests}/missingAG",
-        p=[1,0,1,1],
-    )
+    for i in range(1,len(metals)**2):
+        print(i)
+        a = list(map( int , list(bin(i).removeprefix("0b"))))
+        if len(a) < len(metals):
+            prefix0s = len(metals) - len(a)
+            for ii in range(0,prefix0s):
+                a.insert(0,0)
+            
+        missingMetals = []
+        for (x,y) in zip(metals , a):
+            if(y == 0):
+                missingMetals.append(x)
 
-    generateTest(
-        f"{missing_values_tests}/missingPT",
-        p=[1,1,0,1],
-    )
-
-    generateTest(
-        f"{missing_values_tests}/missingPD",
-        p=[1,1,1,0],
-    )
-
-    generateTest(
-        f"{missing_values_tests}/allWithInTime",
-        p=[4,3,2,1],
-    )
+        j = ","
+        generateTest(
+        f"{missing_values_tests}/missing_{j.join(missingMetals)}",
+        p=a,
+        )
 
     generateTest(
         f"{updated_time_tests}/withIn10minAgo",
@@ -85,4 +81,11 @@ if __name__ == "__main__":
         p=[4,3,2,1],
         dDelta=timedelta(days=1),
     )
+
+    generateTest(
+        f"{happy_path}/happyPathTestData",
+        p=[1,0,0,0],
+        dDelta=timedelta(minutes=1),
+    )
+
 
