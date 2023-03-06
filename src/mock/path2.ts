@@ -81,6 +81,7 @@ Promise.all(promises).then((resutls) => {
 
 function mockRoute(router: Router): Router {
   const path2Mock = async (req: Request, res: Response) => {
+    console.log("End point hits")
     res.setHeader("Content-Type", "text/event-stream");
 
     streamData.forEach((d, i) => {
