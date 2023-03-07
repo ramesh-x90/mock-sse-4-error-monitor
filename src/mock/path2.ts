@@ -48,7 +48,14 @@ readdirSync(testCasePath1).forEach( path => {
   filePaths.push(`${testCasePath1}/${path}`)
 })
 
+const testCasePath2 ="./tests/updated-time-tests"
+readdirSync(testCasePath2).forEach( path => {
+  filePaths.push(`${testCasePath2}/${path}`)
+})
 
+console.log("Test data files")
+filePaths.forEach((val , inx) => console.log(`${inx+1} ${val}`) )
+console.log("\n\n\n")
 
 let testData: String[][] = new Array(filePaths.length);
 const promises: any[] = [];

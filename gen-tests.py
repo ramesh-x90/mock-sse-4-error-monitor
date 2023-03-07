@@ -33,7 +33,7 @@ def generateTest(
             "ric": m,
             "price": np.random.rand() * 1000,
             "updatedTime": int(time.time() * 1000 - dDelta.total_seconds() * 1000),
-            "errorCode": None,
+            "errorCode": "null",
             "signature": "DEB1073E88492861F6B5B57DB6BB510E7E354B05433352C2C127356AD234E1CC",
         }
         file.write( json.dumps(d) + "\n")
@@ -51,7 +51,6 @@ if __name__ == "__main__":
 
 
     for i in range(1,len(metals)**2):
-        print(i)
         a = list(map( int , list(bin(i).removeprefix("0b"))))
         if len(a) < len(metals):
             prefix0s = len(metals) - len(a)

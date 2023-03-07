@@ -19,10 +19,16 @@ export async function mockSseServer() {
     const token = req.query.token
 
     if(!token || token != "12345"){
-      res.header("Content-Type", "text/event-stream")
-      res.status(403).send(
-        `data:${JSON.stringify({'massage:':'Invalid or Expired Token', 'code':'INVALID_TOKEN'})}\n\n`
+      console.log(token)
+      res.setHeader("Content-Type", "text/event-stream")
+      res.status(200)
+      res.write(
+        `data:{'massage:':'Invalid or Expired Token', code:'INVALID_TOKEN'}\n\n`
       )
+      res.write(
+        `data:{'massage:':'Invalid or Expired Token', code:'INVALID_TOKEN'}\n\n`
+      )
+      res.end()
     }else{
       console.log(token)
       next()
