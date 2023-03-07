@@ -61,10 +61,6 @@ let testData: String[][] = new Array(filePaths.length);
 const promises: any[] = [];
 
 
-
-
-
-
 filePaths.forEach((path, i) => {
   promises.push(
     readFile(path).then((data: Buffer) => {

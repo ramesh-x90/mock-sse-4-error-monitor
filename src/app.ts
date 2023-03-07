@@ -19,7 +19,6 @@ export async function mockSseServer() {
     const token = req.query.token
 
     if(!token || token != "12345"){
-      console.log(token)
       res.setHeader("Content-Type", "text/event-stream")
       res.status(200)
       res.write(
@@ -30,12 +29,8 @@ export async function mockSseServer() {
       )
       res.end()
     }else{
-      console.log(token)
       next()
-    }
-    
-
-    
+    }    
   }
 
   app.use('/' , authRoute(router))
@@ -49,6 +44,5 @@ export async function mockSseServer() {
   app.listen(port, () => {
     console.log(`Server is running on port: localhost:${port}`);
   });
-
 
 }
