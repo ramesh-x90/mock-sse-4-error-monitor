@@ -1,16 +1,16 @@
 # Mock SSE Server application to test SSE API monitor 
-
+---
 Install dependencies
 
 ```shell
 npm install
 ```
-
+---
 Start development server
 ```shell
 npm run dev
 ```
-
+---
 ### Test data
 
 
@@ -32,23 +32,23 @@ npm run dev
 16. /tests/updated-time-tests/moreThan10minAgo
 17. /tests/updated-time-tests/withIn10minAgo
 
-
-To change test data set type
+---
+To change test data set use this command in console
 
 ```shell
 test=<number>
 Ex: test=1
 ```
 
-
-To change delay between messages in stream type
+---
+To change delay between messages in stream use this command in console
 
 ```shell
 delay=<number>
 Ex: delay=1000
 ```
 
-
+---
 To generate test data
 
 ```shell
