@@ -1,4 +1,4 @@
-# Mock SSE Server application test SSE API monitor 
+# Mock SSE Server application to test SSE API monitor 
 
 Install dependencies
 
